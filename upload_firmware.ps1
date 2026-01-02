@@ -275,58 +275,59 @@ function Select-Controller {
 #############################################################################
 
 function Get-SerialPorts {
-    # Get COM ports - try multiple methods for compatibility
+    # Get COM ports using .NET which is most reliable
     $ports = @()
 
-    # Method 1: Use .NET SerialPort to get actual COM ports
     try {
+        # Get all available COM ports
         $comPorts = [System.IO.Ports.SerialPort]::GetPortNames()
-        foreach ($port in $comPorts) {
-            # Try to get friendly name from WMI
-            $friendlyName = $port
+
+        if ($comPorts -and $comPorts.Count -gt 0) {
+            # Try to get friendly names from WMI
             try {
-                $deviceInfo = Get-WmiObject Win32_PnPEntity | Where-Object {
-                    $_.Name -match $port
-                } | Select-Object -First 1
-
-                if ($deviceInfo) {
-                    $friendlyName = $deviceInfo.Name
+                $devices = Get-WmiObject Win32_PnPEntity | Where-Object { $_.Name -match "COM\d+" }
+                $deviceMap = @{}
+                foreach ($device in $devices) {
+                    if ($device.Name -match "(COM\d+)") {
+                        $deviceMap[$Matches[1]] = $device.Name
+                    }
                 }
-            } catch {}
+            } catch {
+                $deviceMap = @{}
+            }
 
-            $ports += @{
-                Port = $port
-                Name = $friendlyName
+            # Create port objects with both Port and Name
+            foreach ($comPort in $comPorts) {
+                $displayName = if ($deviceMap.ContainsKey($comPort)) {
+                    $deviceMap[$comPort]
+                } else {
+                    $comPort
+                }
+
+                $ports += @{
+                    Port = $comPort
+                    Name = $displayName
+                }
             }
         }
     } catch {}
 
-    # Fallback Method 2: Check WMI for USB devices with COM ports
+    # If no ports found, try WMI as fallback
     if ($ports.Count -eq 0) {
         try {
-            $usbPorts = Get-WmiObject Win32_PnPEntity | Where-Object {
-                $_.Name -match "COM\d+" -and (
-                    $_.Name -match "USB" -or
-                    $_.Name -match "Serial" -or
-                    $_.Name -match "CH340" -or
-                    $_.Name -match "CP210" -or
-                    $_.Name -match "FTDI" -or
-                    $_.Name -match "Silicon Labs"
-                )
-            }
-
-            foreach ($port in $usbPorts) {
-                if ($port.Name -match "(COM\d+)") {
+            $devices = Get-WmiObject Win32_PnPEntity | Where-Object { $_.Name -match "COM\d+" }
+            foreach ($device in $devices) {
+                if ($device.Name -match "(COM\d+)") {
                     $ports += @{
                         Port = $Matches[1]
-                        Name = $port.Name
+                        Name = $device.Name
                     }
                 }
             }
         } catch {}
     }
 
-    return $ports
+    return , $ports
 }
 
 function Select-Port {
