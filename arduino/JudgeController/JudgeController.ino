@@ -21,6 +21,14 @@
 #include <LiquidCrystal.h>
 
 // ============================================================================
+// VERSION INFORMATION
+// ============================================================================
+#define FIRMWARE_DISPLAY_VERSION "v3.0"  // User-facing version on LCD
+#ifndef BUILD_VERSION
+  #define BUILD_VERSION "dev"              // Injected during release build
+#endif
+
+// ============================================================================
 // PIN DEFINITIONS
 // ============================================================================
 // LCD pins (4-bit mode)
@@ -106,8 +114,13 @@ void setup() {
 
   Serial.print("\r\n");
   Serial.print("========================================\r\n");
-  Serial.print("  SledLink Judge Controller v3.0\r\n");
+  Serial.print("  SledLink Judge Controller ");
+  Serial.print(FIRMWARE_DISPLAY_VERSION);
+  Serial.print("\r\n");
   Serial.print("  Tractor Pull Distance Display\r\n");
+  Serial.print("  Build: ");
+  Serial.print(BUILD_VERSION);
+  Serial.print("\r\n");
   Serial.print("========================================\r\n");
   Serial.print("\r\n");
 

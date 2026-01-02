@@ -7,7 +7,21 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-VERSION="${1:-$(date +%Y.%m.%d)}"
+
+# Version handling with validation
+if [ -n "$1" ]; then
+  VERSION="$1"
+  # Validate semantic version format (v1.2.3) or date format (YYYY.MM.DD)
+  if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]] && \
+     [[ ! "$VERSION" =~ ^[0-9]{4}\.[0-9]{2}\.[0-9]{2}$ ]]; then
+    echo "ERROR: Invalid version format: $VERSION"
+    echo "Expected: v1.2.3, v1.2.3-beta, or YYYY.MM.DD"
+    exit 1
+  fi
+else
+  VERSION="$(date +%Y.%m.%d)"
+fi
+
 RELEASE_DIR="$SCRIPT_DIR/release"
 RELEASE_NAME="SledLink-$VERSION"
 OUTPUT_DIR="$RELEASE_DIR/$RELEASE_NAME"
@@ -105,11 +119,18 @@ cp "$SCRIPT_DIR/UPLOAD_GUIDE.md" "$OUTPUT_DIR/"
 cp "$SCRIPT_DIR/docs/README.md" "$OUTPUT_DIR/docs_README.md" 2>/dev/null || true
 
 # Create release README
-cat > "$OUTPUT_DIR/README.txt" << 'HEREDOC'
+cat > "$OUTPUT_DIR/README.txt" << HEREDOC
 ================================================================================
-  SledLink Firmware Release
+  SledLink Firmware Release $VERSION
   Tractor Pull Distance Measurement System
 ================================================================================
+
+RELEASE INFORMATION
+-------------------
+  Version:        $VERSION
+  Firmware:       v3.0
+  Build Date:     $(date +%Y-%m-%d)
+  Download:       https://github.com/thompcd/SledLink/releases/tag/$VERSION
 
 This release contains pre-compiled firmware and tools for the SledLink system.
 

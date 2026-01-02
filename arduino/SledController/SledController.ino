@@ -30,6 +30,14 @@
 #include <LiquidCrystal.h>
 
 // ============================================================================
+// VERSION INFORMATION
+// ============================================================================
+#define FIRMWARE_DISPLAY_VERSION "v3.0"  // User-facing version on LCD
+#ifndef BUILD_VERSION
+  #define BUILD_VERSION "dev"              // Injected during release build
+#endif
+
+// ============================================================================
 // PIN DEFINITIONS
 // ============================================================================
 // Encoder pins
@@ -150,8 +158,13 @@ void setup() {
 
   Serial.print("\r\n");
   Serial.print("========================================\r\n");
-  Serial.print("  SledLink Sled Controller v3.0\r\n");
+  Serial.print("  SledLink Sled Controller ");
+  Serial.print(FIRMWARE_DISPLAY_VERSION);
+  Serial.print("\r\n");
   Serial.print("  Tractor Pull Distance Measurement\r\n");
+  Serial.print("  Build: ");
+  Serial.print(BUILD_VERSION);
+  Serial.print("\r\n");
   Serial.print("========================================\r\n");
   Serial.print("\r\n");
 

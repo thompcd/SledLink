@@ -2,6 +2,20 @@
 
 This guide explains how to upload firmware to your SledLink controllers. No technical knowledge is required - just follow the steps below.
 
+## Getting SledLink
+
+The latest SledLink release package is available on GitHub:
+
+**[Download Latest Release](https://github.com/thompcd/SledLink/releases/latest)**
+
+Each release includes:
+- Pre-compiled firmware binaries (ready to flash)
+- Upload and flash scripts
+- Source code
+- This guide
+
+---
+
 ## What You'll Need
 
 1. **Your SledLink controller** (either the Sled or Judge unit)

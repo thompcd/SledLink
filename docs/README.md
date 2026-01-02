@@ -12,6 +12,23 @@ This folder contains design documentation and project management files for the S
 
 ---
 
+## Releases
+
+SledLink uses [semantic versioning](https://semver.org/). The current release is available here:
+
+**[Download Latest Release](https://github.com/thompcd/SledLink/releases/latest)**
+
+- **Firmware Version**: v3.0 (displayed on LCD)
+- **Release Version**: v1.0.0+ (package version)
+
+### Release Versioning
+
+- Release versions (v1.0.0, v1.0.1, etc.) track the entire package
+- Firmware display version (v3.0) is user-facing and stable
+- See [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) for maintainer instructions
+
+---
+
 ## About the Backlog
 
 The **[BACKLOG.md](./BACKLOG.md)** file serves as the single source of truth for all development work required to complete the SledLink MVP. It is designed to:
