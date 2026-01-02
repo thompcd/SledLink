@@ -15,8 +15,28 @@ echo.
 REM Change to the directory where this script is located
 cd /d "%~dp0"
 
-REM Run the PowerShell script from tools subdirectory with bypass execution policy
-PowerShell -ExecutionPolicy Bypass -File "%~dp0tools\upload_firmware.ps1"
+REM Check if we're in a release package (tools subdirectory exists) or local repo
+if exist "%~dp0tools\upload_firmware.ps1" (
+    REM Release package structure
+    PowerShell -ExecutionPolicy Bypass -File "%~dp0tools\upload_firmware.ps1"
+) else if exist "%~dp0upload_firmware.ps1" (
+    REM Local repository structure
+    PowerShell -ExecutionPolicy Bypass -File "%~dp0upload_firmware.ps1"
+) else (
+    echo.
+    echo ============================================
+    echo   ERROR: upload_firmware.ps1 not found!
+    echo ============================================
+    echo.
+    echo Could not find the PowerShell script in:
+    echo   - %~dp0tools\upload_firmware.ps1 (release package)
+    echo   - %~dp0upload_firmware.ps1 (local repo)
+    echo.
+    echo Make sure you're running this from the correct directory.
+    echo.
+    pause
+    exit /b 1
+)
 
 REM If PowerShell failed, show error
 if %ERRORLEVEL% NEQ 0 (
