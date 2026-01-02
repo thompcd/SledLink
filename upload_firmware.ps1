@@ -9,7 +9,11 @@ $ErrorActionPreference = "Stop"
 
 # Get the directory where this script is located
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ArduinoDir = Join-Path $ScriptDir "arduino"
+
+# The Arduino source is in the source/ folder at the release root
+# Script is in tools/, so go up one level and into source/
+$ReleaseRoot = Split-Path -Parent $ScriptDir
+$ArduinoDir = Join-Path $ReleaseRoot "source" "arduino"
 
 # Global variables
 $script:SelectedPort = ""
