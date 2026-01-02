@@ -372,9 +372,21 @@ function Select-Port {
             }
 
             if ($ports.Count -eq 1) {
-                $script:SelectedPort = $ports[0].Port
-                $port = $ports[0].Port
-                $name = $ports[0].Name
+                # Access properties safely
+                if ($ports[0] -is [hashtable]) {
+                    $port = $ports[0]['Port']
+                    $name = $ports[0]['Name']
+                } else {
+                    $port = $ports[0].Port
+                    $name = $ports[0].Name
+                }
+
+                # Ensure we have at least the port number
+                if (-not $port) {
+                    $port = "COM?"
+                }
+
+                $script:SelectedPort = $port
 
                 # Show port and name for clarity
                 if ($name -and $name -ne $port) {
@@ -390,8 +402,19 @@ function Select-Port {
                 Write-Host "Multiple devices found:" -ForegroundColor White
                 Write-Host ""
                 for ($i = 0; $i -lt $ports.Count; $i++) {
-                    $port = $ports[$i].Port
-                    $name = $ports[$i].Name
+                    # Access properties safely
+                    if ($ports[$i] -is [hashtable]) {
+                        $port = $ports[$i]['Port']
+                        $name = $ports[$i]['Name']
+                    } else {
+                        $port = $ports[$i].Port
+                        $name = $ports[$i].Name
+                    }
+
+                    # Ensure we have at least the port number
+                    if (-not $port) {
+                        $port = "COM?"
+                    }
 
                     # Show port and name separately for clarity
                     if ($name -and $name -ne $port) {
