@@ -12,18 +12,18 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Determine if we're in a release package or local repo
 # Release: C:\SledLink-v1.0.0\tools\upload_firmware.ps1 -> look for C:\SledLink-v1.0.0\source\arduino
-# Repo: C:\GitRepos\SledLink\upload_firmware.ps1 -> look for C:\GitRepos\SledLink\source\arduino
+# Repo: C:\GitRepos\SledLink\upload_firmware.ps1 -> look for C:\GitRepos\SledLink\arduino
 
-if ((Test-Path (Join-Path $ScriptDir "source" "arduino")) -or
-    (Test-Path (Join-Path $ScriptDir "arduino"))) {
-    # Script is at the root level (local repo)
-    $ArduinoDir = Join-Path $ScriptDir "source" "arduino"
-    if (-not (Test-Path $ArduinoDir)) {
-        # Fallback for development (arduino folder at root)
-        $ArduinoDir = Join-Path $ScriptDir "arduino"
-    }
+# Check if we're at the repo root with source/arduino structure
+$SourceArduinoPath = Join-Path (Join-Path $ScriptDir "source") "arduino"
+if (Test-Path $SourceArduinoPath) {
+    # Release package structure with source/ subfolder
+    $ArduinoDir = $SourceArduinoPath
+} elseif (Test-Path (Join-Path $ScriptDir "arduino")) {
+    # Local repo structure with arduino/ at root
+    $ArduinoDir = Join-Path $ScriptDir "arduino"
 } else {
-    # Script is in tools/ subdirectory (release package)
+    # Must be in tools/ subdirectory (release package)
     $ReleaseRoot = Split-Path -Parent $ScriptDir
     $ArduinoDir = Join-Path (Join-Path $ReleaseRoot "source") "arduino"
 }
