@@ -68,46 +68,12 @@ mkdir -p "$OUTPUT_DIR/firmware"
 mkdir -p "$OUTPUT_DIR/tools"
 mkdir -p "$OUTPUT_DIR/source"
 
-# Compile SledController
-echo ""
-echo "Compiling SledController..."
-arduino-cli compile --fqbn esp32:esp32:esp32 \
-    --output-dir "$OUTPUT_DIR/firmware/SledController" \
-    "$SCRIPT_DIR/arduino/SledController"
-
-# Compile JudgeController
-echo ""
-echo "Compiling JudgeController..."
-arduino-cli compile --fqbn esp32:esp32:esp32 \
-    --output-dir "$OUTPUT_DIR/firmware/JudgeController" \
-    "$SCRIPT_DIR/arduino/JudgeController"
-
-# Copy only the .bin files we need and rename for clarity
-echo ""
-echo "Organizing firmware files..."
-cp "$OUTPUT_DIR/firmware/SledController/SledController.ino.bin" "$OUTPUT_DIR/firmware/SledController.bin"
-cp "$OUTPUT_DIR/firmware/SledController/SledController.ino.bootloader.bin" "$OUTPUT_DIR/firmware/SledController.bootloader.bin"
-cp "$OUTPUT_DIR/firmware/SledController/SledController.ino.partitions.bin" "$OUTPUT_DIR/firmware/SledController.partitions.bin"
-
-cp "$OUTPUT_DIR/firmware/JudgeController/JudgeController.ino.bin" "$OUTPUT_DIR/firmware/JudgeController.bin"
-cp "$OUTPUT_DIR/firmware/JudgeController/JudgeController.ino.bootloader.bin" "$OUTPUT_DIR/firmware/JudgeController.bootloader.bin"
-cp "$OUTPUT_DIR/firmware/JudgeController/JudgeController.ino.partitions.bin" "$OUTPUT_DIR/firmware/JudgeController.partitions.bin"
-
-# Clean up intermediate build directories
-rm -rf "$OUTPUT_DIR/firmware/SledController"
-rm -rf "$OUTPUT_DIR/firmware/JudgeController"
-
-# Copy upload tools
+# Copy upload tools for compiling from source
 echo "Copying upload tools..."
 cp "$SCRIPT_DIR/upload_firmware.sh" "$OUTPUT_DIR/tools/"
 cp "$SCRIPT_DIR/upload_firmware.ps1" "$OUTPUT_DIR/tools/"
 cp "$SCRIPT_DIR/Upload Firmware (Windows).bat" "$OUTPUT_DIR/"
 chmod +x "$OUTPUT_DIR/tools/upload_firmware.sh"
-
-# Copy flash scripts for pre-compiled binaries
-cp "$SCRIPT_DIR/flash_firmware.sh" "$OUTPUT_DIR/" 2>/dev/null || true
-cp "$SCRIPT_DIR/flash_firmware.ps1" "$OUTPUT_DIR/tools/" 2>/dev/null || true
-cp "$SCRIPT_DIR/Flash Firmware (Windows).bat" "$OUTPUT_DIR/" 2>/dev/null || true
 
 # Copy source code
 echo "Copying source code..."
@@ -132,47 +98,24 @@ RELEASE INFORMATION
   Build Date:     $(date +%Y-%m-%d)
   Download:       https://github.com/thompcd/SledLink/releases/tag/$VERSION
 
-This release contains pre-compiled firmware and tools for the SledLink system.
+This release contains source code and tools to compile and upload firmware to the SledLink system.
 
 CONTENTS
 --------
-  firmware/           - Pre-compiled firmware binaries
-    SledController.bin      - Firmware for the sled unit
-    JudgeController.bin     - Firmware for the judge display unit
-    *.bootloader.bin        - ESP32 bootloader files
-    *.partitions.bin        - ESP32 partition tables
-
-  tools/              - Upload utilities
-    upload_firmware.sh      - Mac/Linux upload script (compiles from source)
-    upload_firmware.ps1     - Windows PowerShell upload script
-
   source/             - Arduino source code
     arduino/SledController/ - Sled controller source
-    arduino/JudgeController/- Judge controller source
+    arduino/JudgeController/ - Judge controller source
 
-  Flash Firmware (Windows).bat  - Double-click to flash pre-compiled firmware
-  Upload Firmware (Windows).bat - Double-click to compile & upload from source
+  tools/              - Upload utilities
+    upload_firmware.sh      - Mac/Linux upload script
+    upload_firmware.ps1     - Windows PowerShell upload script
 
-
-QUICK START - FLASHING PRE-COMPILED FIRMWARE
----------------------------------------------
-This is the EASIEST method - uses pre-compiled binaries, no compilation needed.
-
-Windows:
-  1. Connect the controller via USB
-  2. Double-click "Flash Firmware (Windows).bat"
-  3. Follow the prompts
-
-Mac/Linux:
-  1. Connect the controller via USB
-  2. Open Terminal in this folder
-  3. Run: ./flash_firmware.sh
-  4. Follow the prompts
+  Upload Firmware (Windows).bat - Double-click to upload firmware
 
 
-ALTERNATIVE - COMPILE FROM SOURCE
----------------------------------
-Use this if you've modified the source code or prefer to compile fresh.
+QUICK START - UPLOAD FIRMWARE
+-----------------------------
+The firmware is compiled fresh from source code during upload.
 
 Windows:
   1. Connect the controller via USB

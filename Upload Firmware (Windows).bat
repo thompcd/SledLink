@@ -15,8 +15,8 @@ echo.
 REM Change to the directory where this script is located
 cd /d "%~dp0"
 
-REM Run the PowerShell script with bypass execution policy
-PowerShell -ExecutionPolicy Bypass -File "%~dp0upload_firmware.ps1"
+REM Run the PowerShell script from tools subdirectory with bypass execution policy
+PowerShell -ExecutionPolicy Bypass -File "%~dp0tools\upload_firmware.ps1"
 
 REM If PowerShell failed, show error
 if %ERRORLEVEL% NEQ 0 (
