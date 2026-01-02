@@ -10,10 +10,23 @@ $ErrorActionPreference = "Stop"
 # Get the directory where this script is located
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# The Arduino source is in the source/ folder at the release root
-# Script is in tools/, so go up one level and into source/
-$ReleaseRoot = Split-Path -Parent $ScriptDir
-$ArduinoDir = Join-Path $ReleaseRoot "source" "arduino"
+# Determine if we're in a release package or local repo
+# Release: C:\SledLink-v1.0.0\tools\upload_firmware.ps1 -> look for C:\SledLink-v1.0.0\source\arduino
+# Repo: C:\GitRepos\SledLink\upload_firmware.ps1 -> look for C:\GitRepos\SledLink\arduino
+
+# Check if we're at the repo root with source/arduino structure
+$SourceArduinoPath = Join-Path (Join-Path $ScriptDir "source") "arduino"
+if (Test-Path $SourceArduinoPath) {
+    # Release package structure with source/ subfolder
+    $ArduinoDir = $SourceArduinoPath
+} elseif (Test-Path (Join-Path $ScriptDir "arduino")) {
+    # Local repo structure with arduino/ at root
+    $ArduinoDir = Join-Path $ScriptDir "arduino"
+} else {
+    # Must be in tools/ subdirectory (release package)
+    $ReleaseRoot = Split-Path -Parent $ScriptDir
+    $ArduinoDir = Join-Path (Join-Path $ReleaseRoot "source") "arduino"
+}
 
 # Global variables
 $script:SelectedPort = ""
@@ -275,46 +288,59 @@ function Select-Controller {
 #############################################################################
 
 function Get-SerialPorts {
-    # Get COM ports from WMI
+    # Get COM ports using .NET which is most reliable
     $ports = @()
 
-    # Method 1: Check for USB Serial devices
     try {
-        $usbPorts = Get-WmiObject Win32_PnPEntity | Where-Object {
-            $_.Name -match "COM\d+" -and (
-                $_.Name -match "USB" -or
-                $_.Name -match "Serial" -or
-                $_.Name -match "CH340" -or
-                $_.Name -match "CP210" -or
-                $_.Name -match "FTDI" -or
-                $_.Name -match "Silicon Labs"
-            )
-        }
+        # Get all available COM ports
+        $comPorts = [System.IO.Ports.SerialPort]::GetPortNames()
 
-        foreach ($port in $usbPorts) {
-            if ($port.Name -match "(COM\d+)") {
+        if ($comPorts -and $comPorts.Count -gt 0) {
+            # Try to get friendly names from WMI
+            try {
+                $devices = Get-WmiObject Win32_PnPEntity | Where-Object { $_.Name -match "COM\d+" }
+                $deviceMap = @{}
+                foreach ($device in $devices) {
+                    if ($device.Name -match "(COM\d+)") {
+                        $deviceMap[$Matches[1]] = $device.Name
+                    }
+                }
+            } catch {
+                $deviceMap = @{}
+            }
+
+            # Create port objects with both Port and Name
+            foreach ($comPort in $comPorts) {
+                $displayName = if ($deviceMap.ContainsKey($comPort)) {
+                    $deviceMap[$comPort]
+                } else {
+                    $comPort
+                }
+
                 $ports += @{
-                    Port = $Matches[1]
-                    Name = $port.Name
+                    Port = $comPort
+                    Name = $displayName
                 }
             }
         }
     } catch {}
 
-    # Method 2: Fallback to checking all COM ports
+    # If no ports found, try WMI as fallback
     if ($ports.Count -eq 0) {
         try {
-            $comPorts = [System.IO.Ports.SerialPort]::GetPortNames()
-            foreach ($port in $comPorts) {
-                $ports += @{
-                    Port = $port
-                    Name = $port
+            $devices = Get-WmiObject Win32_PnPEntity | Where-Object { $_.Name -match "COM\d+" }
+            foreach ($device in $devices) {
+                if ($device.Name -match "(COM\d+)") {
+                    $ports += @{
+                        Port = $Matches[1]
+                        Name = $device.Name
+                    }
                 }
             }
         } catch {}
     }
 
-    return $ports
+    return , $ports
 }
 
 function Select-Port {
@@ -360,13 +386,28 @@ function Select-Port {
             }
 
             if ($ports.Count -eq 1) {
-                $script:SelectedPort = $ports[0].Port
-                $displayName = if ($ports[0].Name -and $ports[0].Name -ne $ports[0].Port) {
-                    "$($ports[0].Port) - $($ports[0].Name)"
+                # Access properties safely
+                if ($ports[0] -is [hashtable]) {
+                    $port = $ports[0]['Port']
+                    $name = $ports[0]['Name']
                 } else {
-                    $ports[0].Port
+                    $port = $ports[0].Port
+                    $name = $ports[0].Name
                 }
-                Write-Success "Found device: $displayName"
+
+                # Ensure we have at least the port number
+                if (-not $port) {
+                    $port = "COM?"
+                }
+
+                $script:SelectedPort = $port
+
+                # Show port and name for clarity
+                if ($name -and $name -ne $port) {
+                    Write-Success "Found device: $port - $name"
+                } else {
+                    Write-Success "Found device: $port"
+                }
                 Write-Host ""
                 if (Ask-YesNo "Use this device?") {
                     return $true
@@ -375,12 +416,26 @@ function Select-Port {
                 Write-Host "Multiple devices found:" -ForegroundColor White
                 Write-Host ""
                 for ($i = 0; $i -lt $ports.Count; $i++) {
-                    $displayName = if ($ports[$i].Name -and $ports[$i].Name -ne $ports[$i].Port) {
-                        "$($ports[$i].Port) - $($ports[$i].Name)"
+                    # Access properties safely
+                    if ($ports[$i] -is [hashtable]) {
+                        $port = $ports[$i]['Port']
+                        $name = $ports[$i]['Name']
                     } else {
-                        $ports[$i].Port
+                        $port = $ports[$i].Port
+                        $name = $ports[$i].Name
                     }
-                    Write-Host "  $($i + 1)) $displayName"
+
+                    # Ensure we have at least the port number
+                    if (-not $port) {
+                        $port = "COM?"
+                    }
+
+                    # Show port and name separately for clarity
+                    if ($name -and $name -ne $port) {
+                        Write-Host "  $($i + 1)) $port - $name"
+                    } else {
+                        Write-Host "  $($i + 1)) $port"
+                    }
                 }
                 Write-Host ""
 
