@@ -357,7 +357,12 @@ function Select-Port {
 
             if ($ports.Count -eq 1) {
                 $script:SelectedPort = $ports[0].Port
-                Write-Success "Found device: $($ports[0].Name)"
+                $displayName = if ($ports[0].Name -and $ports[0].Name -ne $ports[0].Port) {
+                    "$($ports[0].Port) - $($ports[0].Name)"
+                } else {
+                    $ports[0].Port
+                }
+                Write-Success "Found device: $displayName"
                 Write-Host ""
                 if (Ask-YesNo "Use this device?") {
                     return $true
@@ -366,7 +371,12 @@ function Select-Port {
                 Write-Host "Multiple devices found:" -ForegroundColor White
                 Write-Host ""
                 for ($i = 0; $i -lt $ports.Count; $i++) {
-                    Write-Host "  $($i + 1)) $($ports[$i].Name)"
+                    $displayName = if ($ports[$i].Name -and $ports[$i].Name -ne $ports[$i].Port) {
+                        "$($ports[$i].Port) - $($ports[$i].Name)"
+                    } else {
+                        $ports[$i].Port
+                    }
+                    Write-Host "  $($i + 1)) $displayName"
                 }
                 Write-Host ""
 
