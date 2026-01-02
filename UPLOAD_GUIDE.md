@@ -9,9 +9,8 @@ The latest SledLink release package is available on GitHub:
 **[Download Latest Release](https://github.com/thompcd/SledLink/releases/latest)**
 
 Each release includes:
-- Pre-compiled firmware binaries (ready to flash)
-- Upload and flash scripts
-- Source code
+- Arduino source code for both controllers
+- Upload scripts for Windows, Mac, and Linux
 - This guide
 
 ---
@@ -21,49 +20,15 @@ Each release includes:
 1. **Your SledLink controller** (either the Sled or Judge unit)
 2. **A USB cable** (micro-USB, the same type used for many Android phones)
 3. **A computer** (Windows, Mac, or Linux)
-4. **An internet connection** (only needed the first time to download tools)
+4. **An internet connection** (needed to download tools on first use)
 
 ---
 
-## Two Options
+## Upload Firmware
 
-There are two ways to upload firmware:
-
-| Method | Best For | What It Does |
-|--------|----------|--------------|
-| **Flash Pre-Compiled** | Field use, quick updates | Uses ready-to-go firmware files |
-| **Compile from Source** | Developers, customization | Builds firmware from source code |
-
-**For most users, we recommend "Flash Pre-Compiled"** - it's faster and simpler.
+The firmware is compiled fresh from source code during the upload process.
 
 ---
-
-## Option 1: Flash Pre-Compiled Firmware (Recommended)
-
-This is the **easiest method**. Use this if you downloaded a release package.
-
-### Windows
-
-1. **Download the SledLink release** and unzip it
-2. **Double-click** `Flash Firmware (Windows).bat`
-3. **Follow the prompts** on screen
-
-### Mac / Linux
-
-1. **Download the SledLink release** and unzip it
-2. **Open Terminal** in that folder
-3. **Run:**
-   ```
-   chmod +x flash_firmware.sh   # only needed once
-   ./flash_firmware.sh
-   ```
-4. **Follow the prompts** on screen
-
----
-
-## Option 2: Compile from Source
-
-Use this if you need to modify the firmware or don't have pre-compiled binaries.
 
 ### Windows
 
@@ -106,20 +71,13 @@ Use this if you need to modify the firmware or don't have pre-compiled binaries.
 
 ---
 
-## What the Scripts Do
+## What the Upload Script Does
 
-### Flash Script (Pre-Compiled)
-1. **Checks for esptool** - A simple flashing tool. Installs it if needed.
-2. **Asks which controller** - Sled or Judge
-3. **Finds your controller** - Detects the connected USB device
-4. **Flashes the firmware** - Writes the pre-compiled binary to the controller
-
-### Upload Script (From Source)
 1. **Checks for Arduino CLI** - The build tool. Installs it if needed.
 2. **Sets up ESP32 support** - Downloads ESP32 tools (first time only)
 3. **Asks which controller** - Sled or Judge
 4. **Finds your controller** - Detects the connected USB device
-5. **Compiles and uploads** - Builds from source and writes to controller
+5. **Compiles and uploads** - Builds fresh firmware from source and writes to your controller
 
 ## Troubleshooting
 
