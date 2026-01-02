@@ -275,40 +275,52 @@ function Select-Controller {
 #############################################################################
 
 function Get-SerialPorts {
-    # Get COM ports from WMI
+    # Get COM ports - try multiple methods for compatibility
     $ports = @()
 
-    # Method 1: Check for USB Serial devices
+    # Method 1: Use .NET SerialPort to get actual COM ports
     try {
-        $usbPorts = Get-WmiObject Win32_PnPEntity | Where-Object {
-            $_.Name -match "COM\d+" -and (
-                $_.Name -match "USB" -or
-                $_.Name -match "Serial" -or
-                $_.Name -match "CH340" -or
-                $_.Name -match "CP210" -or
-                $_.Name -match "FTDI" -or
-                $_.Name -match "Silicon Labs"
-            )
-        }
+        $comPorts = [System.IO.Ports.SerialPort]::GetPortNames()
+        foreach ($port in $comPorts) {
+            # Try to get friendly name from WMI
+            $friendlyName = $port
+            try {
+                $deviceInfo = Get-WmiObject Win32_PnPEntity | Where-Object {
+                    $_.Name -match $port
+                } | Select-Object -First 1
 
-        foreach ($port in $usbPorts) {
-            if ($port.Name -match "(COM\d+)") {
-                $ports += @{
-                    Port = $Matches[1]
-                    Name = $port.Name
+                if ($deviceInfo) {
+                    $friendlyName = $deviceInfo.Name
                 }
+            } catch {}
+
+            $ports += @{
+                Port = $port
+                Name = $friendlyName
             }
         }
     } catch {}
 
-    # Method 2: Fallback to checking all COM ports
+    # Fallback Method 2: Check WMI for USB devices with COM ports
     if ($ports.Count -eq 0) {
         try {
-            $comPorts = [System.IO.Ports.SerialPort]::GetPortNames()
-            foreach ($port in $comPorts) {
-                $ports += @{
-                    Port = $port
-                    Name = $port
+            $usbPorts = Get-WmiObject Win32_PnPEntity | Where-Object {
+                $_.Name -match "COM\d+" -and (
+                    $_.Name -match "USB" -or
+                    $_.Name -match "Serial" -or
+                    $_.Name -match "CH340" -or
+                    $_.Name -match "CP210" -or
+                    $_.Name -match "FTDI" -or
+                    $_.Name -match "Silicon Labs"
+                )
+            }
+
+            foreach ($port in $usbPorts) {
+                if ($port.Name -match "(COM\d+)") {
+                    $ports += @{
+                        Port = $Matches[1]
+                        Name = $port.Name
+                    }
                 }
             }
         } catch {}
