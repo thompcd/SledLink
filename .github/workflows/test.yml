@@ -16,20 +16,20 @@ jobs:
       - name: Install arduino-cli
         run: |
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          echo "$HOME/bin" >> $GITHUB_PATH
+          echo "$PWD/bin" >> $GITHUB_PATH
 
       - name: Install ESP32 platform
         run: |
-          arduino-cli config init
-          arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-          arduino-cli core update-index
-          arduino-cli core install esp32:esp32
-          arduino-cli lib install "LiquidCrystal"
+          ${{ github.workspace }}/bin/arduino-cli config init
+          ${{ github.workspace }}/bin/arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+          ${{ github.workspace }}/bin/arduino-cli core update-index
+          ${{ github.workspace }}/bin/arduino-cli core install esp32:esp32
+          ${{ github.workspace }}/bin/arduino-cli lib install "LiquidCrystal"
 
       - name: Compile SledController
         run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32 arduino/SledController
+          ${{ github.workspace }}/bin/arduino-cli compile --fqbn esp32:esp32:esp32 arduino/SledController
 
       - name: Compile JudgeController
         run: |
-          arduino-cli compile --fqbn esp32:esp32:esp32 arduino/JudgeController
+          ${{ github.workspace }}/bin/arduino-cli compile --fqbn esp32:esp32:esp32 arduino/JudgeController

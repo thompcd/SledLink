@@ -35,15 +35,15 @@ jobs:
       - name: Install arduino-cli
         run: |
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          echo "$HOME/bin" >> $GITHUB_PATH
+          echo "$PWD/bin" >> $GITHUB_PATH
 
       - name: Install ESP32 platform and dependencies
         run: |
-          arduino-cli config init
-          arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
-          arduino-cli core update-index
-          arduino-cli core install esp32:esp32
-          arduino-cli lib install "LiquidCrystal"
+          ${{ github.workspace }}/bin/arduino-cli config init
+          ${{ github.workspace }}/bin/arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+          ${{ github.workspace }}/bin/arduino-cli core update-index
+          ${{ github.workspace }}/bin/arduino-cli core install esp32:esp32
+          ${{ github.workspace }}/bin/arduino-cli lib install "LiquidCrystal"
 
       - name: Build release package
         run: |
