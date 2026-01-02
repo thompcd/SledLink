@@ -18,13 +18,13 @@ SledLink uses [semantic versioning](https://semver.org/). The current release is
 
 **[Download Latest Release](https://github.com/thompcd/SledLink/releases/latest)**
 
-- **Firmware Version**: v3.0 (displayed on LCD)
+- **Firmware Version**: v1.0.0 (displayed on LCD)
 - **Release Version**: v1.0.0+ (package version)
 
 ### Release Versioning
 
 - Release versions (v1.0.0, v1.0.1, etc.) track the entire package
-- Firmware display version (v3.0) is user-facing and stable
+- Firmware display version (v1.0.0) is user-facing and updates with releases
 - See [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) for maintainer instructions
 
 ---

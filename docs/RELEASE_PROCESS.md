@@ -160,4 +160,4 @@ git push origin v3.1.0
 
 | Version | Date | Notes |
 |---------|------|-------|
-| v3.0.0 | TBD | First semantic versioned release |
+| v1.0.0 | TBD | First public release |

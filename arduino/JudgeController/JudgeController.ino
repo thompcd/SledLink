@@ -23,9 +23,9 @@
 // ============================================================================
 // VERSION INFORMATION
 // ============================================================================
-#define FIRMWARE_DISPLAY_VERSION "v3.0"  // User-facing version on LCD
+#define FIRMWARE_DISPLAY_VERSION "v1.0.0"  // User-facing version on LCD
 #ifndef BUILD_VERSION
-  #define BUILD_VERSION "dev"              // Injected during release build
+  #define BUILD_VERSION "dev"               // Injected during release build
 #endif
 
 // ============================================================================

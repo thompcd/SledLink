@@ -128,7 +128,7 @@ cat > "$OUTPUT_DIR/README.txt" << HEREDOC
 RELEASE INFORMATION
 -------------------
   Version:        $VERSION
-  Firmware:       v3.0
+  Firmware:       v1.0.0
   Build Date:     $(date +%Y-%m-%d)
   Download:       https://github.com/thompcd/SledLink/releases/tag/$VERSION
 
