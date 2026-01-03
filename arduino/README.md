@@ -8,7 +8,7 @@ SledLink consists of two ESP32 units communicating wirelessly via ESP-NOW:
 
 ```
 ┌─────────────────────┐    ESP-NOW    ┌─────────────────────┐
-│   SLED CONTROLLER   │ ───────────► │  JUDGE CONTROLLER   │
+│   SLED CONTROLLER   │ ───────────►  │  JUDGE CONTROLLER   │
 │   (on the sled)     │  <distance>   │  (at judge's table) │
 │                     │               │                     │
 │ - Rotary encoder    │               │ - LCD display       │

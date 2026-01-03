@@ -9,8 +9,9 @@ The latest SledLink release package is available on GitHub:
 **[Download Latest Release](https://github.com/thompcd/SledLink/releases/latest)**
 
 Each release includes:
+- Pre-compiled firmware binaries (ready to flash instantly)
 - Arduino source code for both controllers
-- Upload scripts for Windows, Mac, and Linux
+- Upload/flash scripts for Windows
 - This guide
 
 ---
@@ -19,24 +20,64 @@ Each release includes:
 
 1. **Your SledLink controller** (either the Sled or Judge unit)
 2. **A USB cable** (micro-USB, the same type used for many Android phones)
-3. **A computer** (Windows, Mac, or Linux)
-4. **An internet connection** (needed to download tools on first use)
+3. **A Windows computer**
+4. **No internet connection needed** for flashing!
 
 ---
 
-## Upload Firmware
+## Upload Firmware - Two Methods
 
-The firmware is compiled fresh from source code during the upload process.
+There are two ways to update your controller's firmware:
+
+### **Method 1: Quick Flash (RECOMMENDED - 10 seconds)**
+
+Pre-compiled firmware flashes instantly. **This is the easiest method.**
+
+### **Method 2: Compile from Source (Advanced - 60+ seconds)**
+
+Compile the Arduino source code on your computer. For developers or customization.
 
 ---
 
-### Windows
+## Method 1: Quick Flash (RECOMMENDED)
+
+Pre-compiled firmware is ready to flash instantly - no compilation needed!
+
+### Windows - Quick Flash
+
+1. **Download the SledLink folder** to your computer from GitHub
+2. **Extract the ZIP file** to a convenient location
+3. **Connect your controller** via USB cable to your computer
+4. **Double-click** `Flash Firmware.bat` in the main folder
+5. **Select your controller type:**
+   - Type `1` if flashing a SLED Controller (with encoder)
+   - Type `2` if flashing a JUDGE Controller (display only)
+6. **Flash happens automatically** - takes about 10 seconds
+7. **Done!** Your controller restarts automatically
+
+That's it! Your system is now ready to use.
+
+### What is "Flashing"?
+
+Flashing writes the firmware directly to your controller's memory using pre-compiled binaries. It's much faster than compiling (10 seconds vs 60+ seconds) and requires no additional software beyond Windows.
+
+---
+
+## Method 2: Compile from Source (Advanced)
+
+For developers who want to modify the firmware or use the full development environment.
+
+This method compiles the Arduino code fresh each time, taking 30-60 seconds longer than flashing.
+
+---
+
+### Windows - Compile from Source
 
 1. **Download the SledLink folder** to your computer
 2. **Double-click** `Upload Firmware (Windows).bat`
 3. **Follow the prompts** on screen
 
-### Mac
+### Mac - Compile from Source
 
 1. **Download the SledLink folder** to your computer
 2. **Open Terminal** (press Cmd+Space, type "Terminal", press Enter)
@@ -55,7 +96,7 @@ The firmware is compiled fresh from source code during the upload process.
    ```
 6. **Follow the prompts** on screen
 
-### Linux
+### Linux - Compile from Source
 
 1. **Download the SledLink folder** to your computer
 2. **Open a terminal** in that folder
@@ -71,15 +112,71 @@ The firmware is compiled fresh from source code during the upload process.
 
 ---
 
-## What the Upload Script Does
+## What the Compile-from-Source Script Does
 
 1. **Checks for Arduino CLI** - The build tool. Installs it if needed.
-2. **Sets up ESP32 support** - Downloads ESP32 tools (first time only)
+2. **Sets up ESP32 support** - Downloads ESP32 tools (first time only, ~500MB)
 3. **Asks which controller** - Sled or Judge
 4. **Finds your controller** - Detects the connected USB device
 5. **Compiles and uploads** - Builds fresh firmware from source and writes to your controller
 
+---
+
 ## Troubleshooting
+
+### Flash Method Issues
+
+#### "Flash Firmware.bat won't run" or Windows Defender blocks it
+
+- **Windows Defender SmartScreen:** Click **"More info"** then **"Run anyway"**
+- **Right-click** the `.bat` file and select **"Run as administrator"**
+- **Temporary solution:** Run from Command Prompt: `Flash Firmware.bat`
+
+#### "esptool.exe not found"
+
+- Make sure you **extracted the entire release ZIP** with all directories
+- The file `firmware/tools/esptool.exe` must be present
+- Try **re-downloading the release** if files seem to be missing
+
+#### "No device found" during flash
+
+Try these in order:
+
+1. **Different USB cable** - Some cables are "charge-only" and don't carry data
+2. **Different USB port** - Try another port on your computer
+3. **Wait a few seconds** after plugging in for Windows to recognize the device
+4. **Check Device Manager:**
+   - Press `Win+X`, select "Device Manager"
+   - Look for your device under "Ports (COM & LPT)"
+   - If it shows a warning icon, you need USB drivers
+
+#### "Flash failed" or timeout error
+
+1. **Hold the BOOT button** on the ESP32 board during the first 5 seconds of flash
+   - The flash tool will tell you when it's starting
+   - You can release BOOT after it begins
+2. **Try a different USB cable** (charge-only cables won't work)
+3. **Try a different USB port**
+4. **Close other programs** that might be using the serial port (Arduino IDE, PuTTY, etc.)
+5. **Try restarting your computer**
+
+#### USB Driver Issues
+
+If Windows doesn't recognize your device:
+
+**CP210x drivers** (for some ESP32 boards):
+- Download: [CP210x USB to UART Bridge VCP Drivers](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
+- Install and restart your computer
+
+**CH340 drivers** (for other ESP32 boards):
+- Download: CH340 drivers (search "CH340 driver Windows")
+- Install and restart your computer
+
+If you're not sure which driver you need, try one - it won't hurt to have both installed.
+
+---
+
+### Method 2: Compile from Source - Troubleshooting
 
 ### "No serial devices found"
 
@@ -133,13 +230,14 @@ Then **log out and back in** for the change to take effect.
 - **Receives** and displays distance
 - No encoder connected
 
-## After Uploading
+## After Flashing or Uploading Firmware
 
-After firmware is uploaded:
+After your controller has been updated (whether using flash or compile method):
 
 1. The controller will **restart automatically**
 2. The LCD should show "SledLink" and then the startup screen
-3. You can use the **serial monitor** option in the script to see diagnostic output
+3. Your system is ready to use!
+4. For compile-from-source method: You can use the **serial monitor** option in the script to see diagnostic output
 
 ## Need Help?
 
