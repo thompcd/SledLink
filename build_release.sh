@@ -70,6 +70,12 @@ mkdir -p "$OUTPUT_DIR/firmware/tools"
 mkdir -p "$OUTPUT_DIR/tools"
 mkdir -p "$OUTPUT_DIR/source"
 
+# Copy flash tools
+echo "Copying flash tools..."
+cp "$SCRIPT_DIR/Flash Firmware.bat" "$OUTPUT_DIR/"
+cp "$SCRIPT_DIR/flash_firmware.ps1" "$OUTPUT_DIR/"
+chmod +x "$OUTPUT_DIR/flash_firmware.ps1"
+
 # Copy upload tools for compiling from source
 echo "Copying upload tools..."
 cp "$SCRIPT_DIR/upload_firmware.sh" "$OUTPUT_DIR/tools/"
