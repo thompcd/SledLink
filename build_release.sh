@@ -70,17 +70,17 @@ mkdir -p "$OUTPUT_DIR/firmware/tools"
 mkdir -p "$OUTPUT_DIR/tools"
 mkdir -p "$OUTPUT_DIR/source"
 
-# Copy flash tools
+# Copy flash tools (main method for users)
 echo "Copying flash tools..."
 cp "$SCRIPT_DIR/Flash Firmware.bat" "$OUTPUT_DIR/"
 cp "$SCRIPT_DIR/flash_firmware.ps1" "$OUTPUT_DIR/"
 chmod +x "$OUTPUT_DIR/flash_firmware.ps1"
 
-# Copy upload tools for compiling from source
-echo "Copying upload tools..."
+# Copy compile/upload tools (advanced method for developers)
+echo "Copying advanced compile tools..."
 cp "$SCRIPT_DIR/upload_firmware.sh" "$OUTPUT_DIR/tools/"
 cp "$SCRIPT_DIR/upload_firmware.ps1" "$OUTPUT_DIR/tools/"
-cp "$SCRIPT_DIR/Upload Firmware (Windows).bat" "$OUTPUT_DIR/"
+cp "$SCRIPT_DIR/Upload Firmware (Windows).bat" "$OUTPUT_DIR/tools/Compile Firmware (Windows).bat"
 chmod +x "$OUTPUT_DIR/tools/upload_firmware.sh"
 
 # Copy source code
@@ -154,17 +154,16 @@ CONTENTS
     JudgeController/  - Judge controller binaries
     tools/            - esptool.exe for Windows
 
-  Flash Firmware.bat  - EASIEST METHOD: Double-click to flash firmware
+  Flash Firmware.bat  - Main method: Double-click to flash firmware instantly
 
-  source/             - Arduino source code (for advanced users)
+  source/             - Arduino source code (for advanced users and developers)
     arduino/SledController/ - Sled controller source
     arduino/JudgeController/ - Judge controller source
 
-  tools/              - Upload utilities (for compiling from source)
-    upload_firmware.sh      - Mac/Linux upload script (compile-on-upload)
-    upload_firmware.ps1     - Windows PowerShell upload script (compile-on-upload)
-
-  Upload Firmware (Windows).bat - Legacy: Compile and upload (slow, ~60 seconds)
+  tools/              - Advanced tools (for developers)
+    Compile Firmware (Windows).bat - Compile and upload from source code
+    upload_firmware.sh             - Mac/Linux compile and upload script
+    upload_firmware.ps1            - Windows PowerShell compile and upload script
 
 
 QUICK START - FLASH FIRMWARE (RECOMMENDED)
