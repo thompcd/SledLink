@@ -64,7 +64,9 @@ fi
 echo ""
 echo "Creating release directory..."
 rm -rf "$OUTPUT_DIR"
-mkdir -p "$OUTPUT_DIR/firmware"
+mkdir -p "$OUTPUT_DIR/firmware/SledController"
+mkdir -p "$OUTPUT_DIR/firmware/JudgeController"
+mkdir -p "$OUTPUT_DIR/firmware/tools"
 mkdir -p "$OUTPUT_DIR/tools"
 mkdir -p "$OUTPUT_DIR/source"
 
@@ -78,6 +80,45 @@ chmod +x "$OUTPUT_DIR/tools/upload_firmware.sh"
 # Copy source code
 echo "Copying source code..."
 cp -r "$SCRIPT_DIR/arduino" "$OUTPUT_DIR/source/"
+
+# Compile firmware binaries
+echo ""
+echo "Compiling firmware binaries..."
+echo "  SledController..."
+arduino-cli compile --fqbn esp32:esp32:esp32 --export-binaries \
+  --output-dir "$SCRIPT_DIR/firmware_binaries/SledController" \
+  "$SCRIPT_DIR/arduino/SledController" 2>&1 | grep -E "(Compiling|Archiving|Sketch uses|Global variables)" || true
+
+echo "  JudgeController..."
+arduino-cli compile --fqbn esp32:esp32:esp32 --export-binaries \
+  --output-dir "$SCRIPT_DIR/firmware_binaries/JudgeController" \
+  "$SCRIPT_DIR/arduino/JudgeController" 2>&1 | grep -E "(Compiling|Archiving|Sketch uses|Global variables)" || true
+
+# Package binaries into release
+echo "Packaging firmware binaries..."
+for controller in SledController JudgeController; do
+  BIN_DIR="$SCRIPT_DIR/firmware_binaries/$controller"
+  OUT_DIR="$OUTPUT_DIR/firmware/$controller"
+
+  if [ -f "$BIN_DIR/${controller}.ino.bin" ]; then
+    cp "$BIN_DIR/${controller}.ino.bin" "$OUT_DIR/firmware.bin"
+    cp "$BIN_DIR/${controller}.ino.bootloader.bin" "$OUT_DIR/bootloader.bin"
+    cp "$BIN_DIR/${controller}.ino.partitions.bin" "$OUT_DIR/partitions.bin"
+    echo "  ✓ $controller"
+  else
+    echo "  ✗ $controller - binaries not found!"
+  fi
+done
+
+# Extract and copy esptool
+echo "Extracting esptool for Windows..."
+ESPTOOL_DIR=$(find ~/.arduino15/packages/esp32/tools/esptool_py -type d -maxdepth 2 2>/dev/null | head -1)
+if [ -f "$ESPTOOL_DIR/esptool.exe" ]; then
+  cp "$ESPTOOL_DIR/esptool.exe" "$OUTPUT_DIR/firmware/tools/"
+  echo "  ✓ esptool.exe bundled"
+else
+  echo "  ⚠ esptool.exe not found - Windows flashing may not work"
+fi
 
 # Copy documentation
 echo "Copying documentation..."
@@ -98,35 +139,38 @@ RELEASE INFORMATION
   Build Date:     $(date +%Y-%m-%d)
   Download:       https://github.com/thompcd/SledLink/releases/tag/$VERSION
 
-This release contains source code and tools to compile and upload firmware to the SledLink system.
+This release contains PRE-COMPILED firmware ready to flash instantly!
 
 CONTENTS
 --------
-  source/             - Arduino source code
+  firmware/           - Pre-compiled firmware binaries (ready to flash)
+    SledController/   - Sled controller binaries
+    JudgeController/  - Judge controller binaries
+    tools/            - esptool.exe for Windows
+
+  Flash Firmware.bat  - EASIEST METHOD: Double-click to flash firmware
+
+  source/             - Arduino source code (for advanced users)
     arduino/SledController/ - Sled controller source
     arduino/JudgeController/ - Judge controller source
 
-  tools/              - Upload utilities
-    upload_firmware.sh      - Mac/Linux upload script
-    upload_firmware.ps1     - Windows PowerShell upload script
+  tools/              - Upload utilities (for compiling from source)
+    upload_firmware.sh      - Mac/Linux upload script (compile-on-upload)
+    upload_firmware.ps1     - Windows PowerShell upload script (compile-on-upload)
 
-  Upload Firmware (Windows).bat - Double-click to upload firmware
+  Upload Firmware (Windows).bat - Legacy: Compile and upload (slow, ~60 seconds)
 
 
-QUICK START - UPLOAD FIRMWARE
------------------------------
-The firmware is compiled fresh from source code during upload.
+QUICK START - FLASH FIRMWARE (RECOMMENDED)
+-------------------------------------------
+Pre-compiled firmware flashes in ~10 seconds - no compilation needed!
 
 Windows:
   1. Connect the controller via USB
-  2. Double-click "Upload Firmware (Windows).bat"
-  3. Follow the prompts
-
-Mac/Linux:
-  1. Connect the controller via USB
-  2. Open Terminal in this folder
-  3. Run: ./tools/upload_firmware.sh
-  4. Follow the prompts
+  2. Double-click "Flash Firmware.bat"
+  3. Select controller type (1=Sled, 2=Judge)
+  4. Firmware flashes automatically!
+  5. Controller restarts automatically
 
 
 WHICH CONTROLLER IS WHICH?
@@ -148,13 +192,13 @@ See UPLOAD_GUIDE.md for detailed troubleshooting steps.
 
 Common issues:
   - "No device found" - Try a different USB cable (some are charge-only)
-  - "Upload failed" - Hold BOOT button on ESP32 during upload
+  - "Flash failed" - Hold BOOT button on ESP32 during flash
   - Driver issues - Install CP210x or CH340 USB driver for your OS
 
 
 SUPPORT
 -------
-For issues, visit: https://github.com/tulsasoftware/SledLink/issues
+For issues, visit: https://github.com/thompcd/SledLink/issues
 
 ================================================================================
 HEREDOC

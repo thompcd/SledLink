@@ -45,6 +45,38 @@ jobs:
           ${{ github.workspace }}/bin/arduino-cli core install esp32:esp32
           ${{ github.workspace }}/bin/arduino-cli lib install "LiquidCrystal"
 
+      - name: Compile and export firmware binaries
+        run: |
+          echo "Compiling SledController..."
+          ${{ github.workspace }}/bin/arduino-cli compile \
+            --fqbn esp32:esp32:esp32 \
+            --export-binaries \
+            --output-dir ${{ github.workspace }}/firmware_binaries/SledController \
+            ${{ github.workspace }}/arduino/SledController
+
+          echo "Compiling JudgeController..."
+          ${{ github.workspace }}/bin/arduino-cli compile \
+            --fqbn esp32:esp32:esp32 \
+            --export-binaries \
+            --output-dir ${{ github.workspace }}/firmware_binaries/JudgeController \
+            ${{ github.workspace }}/arduino/JudgeController
+
+          echo "Compiled firmware files:"
+          find ${{ github.workspace }}/firmware_binaries -name "*.bin" -ls
+
+      - name: Extract esptool for Windows
+        run: |
+          ESPTOOL_DIR=$(find ~/.arduino15/packages/esp32/tools/esptool_py -type d -maxdepth 2 | head -1)
+          mkdir -p ${{ github.workspace }}/bundled_tools
+
+          if [ -f "$ESPTOOL_DIR/esptool.exe" ]; then
+            cp "$ESPTOOL_DIR/esptool.exe" ${{ github.workspace }}/bundled_tools/
+            echo "esptool.exe bundled successfully"
+            ls -lh ${{ github.workspace }}/bundled_tools/esptool.exe
+          else
+            echo "Warning: esptool.exe not found in $ESPTOOL_DIR"
+          fi
+
       - name: Build release package
         run: |
           chmod +x build_release.sh
