@@ -25,21 +25,11 @@ Each release includes:
 
 ---
 
-## Upload Firmware - Two Methods
-
-There are two ways to update your controller's firmware:
-
-### **Method 1: Quick Flash (RECOMMENDED - 10 seconds)**
-
-Pre-compiled firmware flashes instantly. **This is the easiest method.**
-
-### **Method 2: Compile from Source (Advanced - 60+ seconds)**
-
-Compile the Arduino source code on your computer. For developers or customization.
+## Flash Your Firmware
 
 ---
 
-## Method 1: Quick Flash (RECOMMENDED)
+## Standard Method: Quick Flash (Recommended)
 
 Pre-compiled firmware is ready to flash instantly - no compilation needed!
 
@@ -63,19 +53,21 @@ Flashing writes the firmware directly to your controller's memory using pre-comp
 
 ---
 
-## Method 2: Compile from Source (Advanced)
+## For Advanced Users & Developers
 
-For developers who want to modify the firmware or use the full development environment.
+### Compile Firmware from Source Code
 
-This method compiles the Arduino code fresh each time, taking 30-60 seconds longer than flashing.
+If you need to modify the firmware or want the full Arduino development environment, you can compile from source instead of flashing pre-compiled binaries. This takes 60+ seconds instead of ~10 seconds.
 
 ---
 
 ### Windows - Compile from Source
 
 1. **Download the SledLink folder** to your computer
-2. **Double-click** `Upload Firmware (Windows).bat`
-3. **Follow the prompts** on screen
+2. **Extract the ZIP file** to a convenient location
+3. **Open the `tools` folder** in the release package
+4. **Double-click** `Compile Firmware (Windows).bat`
+5. **Follow the prompts** on screen
 
 ### Mac - Compile from Source
 
@@ -112,7 +104,7 @@ This method compiles the Arduino code fresh each time, taking 30-60 seconds long
 
 ---
 
-## What the Compile-from-Source Script Does
+### How Compile-from-Source Works
 
 1. **Checks for Arduino CLI** - The build tool. Installs it if needed.
 2. **Sets up ESP32 support** - Downloads ESP32 tools (first time only, ~500MB)
