@@ -72,7 +72,7 @@ mkdir -p "$OUTPUT_DIR/source"
 
 # Copy flash tools (main method for users)
 echo "Copying flash tools..."
-cp "$SCRIPT_DIR/Flash Firmware.bat" "$OUTPUT_DIR/"
+cp "$SCRIPT_DIR/FlashFirmware.bat" "$OUTPUT_DIR/"
 cp "$SCRIPT_DIR/flash_firmware.ps1" "$OUTPUT_DIR/"
 chmod +x "$OUTPUT_DIR/flash_firmware.ps1"
 
