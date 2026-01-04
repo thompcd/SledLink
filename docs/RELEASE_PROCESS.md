@@ -41,8 +41,7 @@ git push origin v3.0.1
 3. It will:
    - Validate the tag
    - Install dependencies
-   - Compile both firmwares
-   - Create release package
+   - Create release package with source code and upload tools
    - Create GitHub release
    - Upload ZIP file
 
