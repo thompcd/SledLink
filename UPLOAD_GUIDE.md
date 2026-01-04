@@ -9,9 +9,8 @@ The latest SledLink release package is available on GitHub:
 **[Download Latest Release](https://github.com/thompcd/SledLink/releases/latest)**
 
 Each release includes:
-- Pre-compiled firmware binaries (ready to flash instantly)
 - Arduino source code for both controllers
-- Upload/flash scripts for Windows
+- Upload scripts for Windows, Mac, and Linux
 - This guide
 
 ---
@@ -25,51 +24,21 @@ Each release includes:
 
 ---
 
-## Flash Your Firmware
+## Upload Your Firmware
+
+Firmware is compiled fresh from source code during upload. This ensures compatibility with your system and allows for easy customization.
 
 ---
 
-## Standard Method: Quick Flash (Recommended)
-
-Pre-compiled firmware is ready to flash instantly - no compilation needed!
-
-### Windows - Quick Flash
+### Windows
 
 1. **Download the SledLink folder** to your computer from GitHub
 2. **Extract the ZIP file** to a convenient location
-3. **Connect your controller** via USB cable to your computer
-4. **Double-click** `FlashFirmware.bat` in the main folder
-5. **Select your controller type:**
-   - Type `1` if flashing a SLED Controller (with encoder)
-   - Type `2` if flashing a JUDGE Controller (display only)
-6. **Flash happens automatically** - takes about 10 seconds
-7. **Done!** Your controller restarts automatically
+3. **Double-click** `Upload Firmware (Windows).bat` in the main folder
+4. **Follow the prompts** on screen
+5. The compilation and upload happens automatically
 
-That's it! Your system is now ready to use.
-
-### What is "Flashing"?
-
-Flashing writes the firmware directly to your controller's memory using pre-compiled binaries. It's much faster than compiling (10 seconds vs 60+ seconds) and requires no additional software beyond Windows.
-
----
-
-## For Advanced Users & Developers
-
-### Compile Firmware from Source Code
-
-If you need to modify the firmware or want the full Arduino development environment, you can compile from source instead of flashing pre-compiled binaries. This takes 60+ seconds instead of ~10 seconds.
-
----
-
-### Windows - Compile from Source
-
-1. **Download the SledLink folder** to your computer
-2. **Extract the ZIP file** to a convenient location
-3. **Open the `tools` folder** in the release package
-4. **Double-click** `Compile Firmware (Windows).bat`
-5. **Follow the prompts** on screen
-
-### Mac - Compile from Source
+### Mac
 
 1. **Download the SledLink folder** to your computer
 2. **Open Terminal** (press Cmd+Space, type "Terminal", press Enter)
@@ -104,7 +73,7 @@ If you need to modify the firmware or want the full Arduino development environm
 
 ---
 
-### How Compile-from-Source Works
+### How Upload Works
 
 1. **Checks for Arduino CLI** - The build tool. Installs it if needed.
 2. **Sets up ESP32 support** - Downloads ESP32 tools (first time only, ~500MB)
@@ -116,21 +85,9 @@ If you need to modify the firmware or want the full Arduino development environm
 
 ## Troubleshooting
 
-### Flash Method Issues
+### "No serial devices found"
 
-#### "FlashFirmware.bat won't run" or Windows Defender blocks it
-
-- **Windows Defender SmartScreen:** Click **"More info"** then **"Run anyway"**
-- **Right-click** the `.bat` file and select **"Run as administrator"**
-- **Temporary solution:** Run from Command Prompt: `FlashFirmware.bat`
-
-#### "esptool.exe not found"
-
-- Make sure you **extracted the entire release ZIP** with all directories
-- The file `firmware/tools/esptool.exe` must be present
-- Try **re-downloading the release** if files seem to be missing
-
-#### "No device found" during flash
+Your controller might not be connected or recognized by Windows.
 
 Try these in order:
 
@@ -140,19 +97,25 @@ Try these in order:
 4. **Check Device Manager:**
    - Press `Win+X`, select "Device Manager"
    - Look for your device under "Ports (COM & LPT)"
-   - If it shows a warning icon, you need USB drivers
+   - If it shows a warning icon, you need USB drivers (see "USB Driver Issues" below)
 
-#### "Flash failed" or timeout error
+### "Upload failed" or timeout error
 
-1. **Hold the BOOT button** on the ESP32 board during the first 5 seconds of flash
-   - The flash tool will tell you when it's starting
+1. **Hold the BOOT button** on the ESP32 board during the first 5 seconds of upload
+   - The upload tool will tell you when it's starting
    - You can release BOOT after it begins
 2. **Try a different USB cable** (charge-only cables won't work)
 3. **Try a different USB port**
 4. **Close other programs** that might be using the serial port (Arduino IDE, PuTTY, etc.)
 5. **Try restarting your computer**
 
-#### USB Driver Issues
+### Windows: "Script won't run" or security error
+
+- **Right-click** `Upload Firmware (Windows).bat` and select **"Run as administrator"**
+- If Windows SmartScreen blocks it, click **"More info"** then **"Run anyway"**
+- **Temporary solution:** Run from Command Prompt: `"Upload Firmware (Windows).bat"`
+
+### USB Driver Issues
 
 If Windows doesn't recognize your device:
 
@@ -165,28 +128,6 @@ If Windows doesn't recognize your device:
 - Install and restart your computer
 
 If you're not sure which driver you need, try one - it won't hurt to have both installed.
-
----
-
-### Method 2: Compile from Source - Troubleshooting
-
-### "No serial devices found"
-
-- **Try a different USB cable.** Some cables are "charge only" and don't have data wires.
-- **Try a different USB port** on your computer.
-- **Wait a few seconds** after plugging in for drivers to load.
-- **Check Device Manager** (Windows) to see if the device appears with a warning icon.
-
-### "Upload failed"
-
-- **Unplug and replug** the USB cable, then try again.
-- **Hold the BOOT button** on the ESP32 while the upload starts, then release it.
-- **Close other programs** that might be using the serial port (like Arduino IDE or PuTTY).
-
-### Windows: "Script won't run" or security error
-
-- **Right-click** the `.bat` file and select **"Run as administrator"**
-- If Windows SmartScreen blocks it, click **"More info"** then **"Run anyway"**
 
 ### Mac: "Permission denied"
 
