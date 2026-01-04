@@ -225,13 +225,8 @@ SledLink/
 ├── upload_firmware.ps1            # Windows PowerShell upload script
 ├── Upload Firmware (Windows).bat  # Windows launcher (double-click)
 │
-│   # Flash Tools (pre-compiled binaries)
-├── flash_firmware.sh              # Mac/Linux flash script
-├── flash_firmware.ps1             # Windows PowerShell flash script
-├── Flash Firmware (Windows).bat   # Windows launcher (double-click)
-│
 │   # Release & Documentation
-├── build_release.sh               # Build release package with binaries
+├── build_release.sh               # Build release package
 ├── UPLOAD_GUIDE.md                # User guide for firmware upload
 └── release/                       # Generated release packages (git-ignored)
 ```
