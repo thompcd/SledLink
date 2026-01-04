@@ -41,7 +41,7 @@ if exist "%~dp0flash_firmware.ps1" (
         echo   - tools\flash_firmware.ps1 (in release tools folder)
         echo.
         echo Debugging info:
-        echo   Script batch file is at: "%~dp0Flash Firmware.bat"
+        echo   Script batch file is at: "%~dp0FlashFirmware.bat"
         echo   Looking for PS1 at: "%~dp0flash_firmware.ps1"
         echo   Or at: "%~dp0tools\flash_firmware.ps1"
         echo.

@@ -38,7 +38,7 @@ Pre-compiled firmware is ready to flash instantly - no compilation needed!
 1. **Download the SledLink folder** to your computer from GitHub
 2. **Extract the ZIP file** to a convenient location
 3. **Connect your controller** via USB cable to your computer
-4. **Double-click** `Flash Firmware.bat` in the main folder
+4. **Double-click** `FlashFirmware.bat` in the main folder
 5. **Select your controller type:**
    - Type `1` if flashing a SLED Controller (with encoder)
    - Type `2` if flashing a JUDGE Controller (display only)
@@ -118,11 +118,11 @@ If you need to modify the firmware or want the full Arduino development environm
 
 ### Flash Method Issues
 
-#### "Flash Firmware.bat won't run" or Windows Defender blocks it
+#### "FlashFirmware.bat won't run" or Windows Defender blocks it
 
 - **Windows Defender SmartScreen:** Click **"More info"** then **"Run anyway"**
 - **Right-click** the `.bat` file and select **"Run as administrator"**
-- **Temporary solution:** Run from Command Prompt: `Flash Firmware.bat`
+- **Temporary solution:** Run from Command Prompt: `FlashFirmware.bat`
 
 #### "esptool.exe not found"
 
