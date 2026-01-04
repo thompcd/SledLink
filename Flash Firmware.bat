@@ -16,6 +16,9 @@ echo.
 REM Change to the script directory
 cd /d "%~dp0"
 
+echo Debug: Script directory is "%~dp0"
+echo.
+
 REM Check for flash script
 if exist "%~dp0flash_firmware.ps1" (
     echo Launching flash tool...
@@ -23,7 +26,7 @@ if exist "%~dp0flash_firmware.ps1" (
     PowerShell -ExecutionPolicy Bypass -File "%~dp0flash_firmware.ps1"
 ) else (
     if exist "%~dp0tools\flash_firmware.ps1" (
-        echo Launching flash tool...
+        echo Launching flash tool from tools...
         echo.
         PowerShell -ExecutionPolicy Bypass -File "%~dp0tools\flash_firmware.ps1"
     ) else (
@@ -36,6 +39,11 @@ if exist "%~dp0flash_firmware.ps1" (
         echo The flash script should be at:
         echo   - flash_firmware.ps1 (in release root), or
         echo   - tools\flash_firmware.ps1 (in release tools folder)
+        echo.
+        echo Debugging info:
+        echo   Script batch file is at: "%~dp0Flash Firmware.bat"
+        echo   Looking for PS1 at: "%~dp0flash_firmware.ps1"
+        echo   Or at: "%~dp0tools\flash_firmware.ps1"
         echo.
         pause
         exit /b 1
